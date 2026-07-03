@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0e1b2c">
+<meta name="description" content="فاصل الفصول — تقسيم ملفات PDF إلى فصول، سريع وخفيف ويعمل بدون إنترنت">
+<title>فاصل الفصول — PDF Chapter Splitter</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon.svg">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="app-header">
+  <div class="brand">
+    <svg class="brand-mark" viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M12 2l2 3h-4l2-3zm-4 5h8l1.5 11a2 2 0 0 1-2 2.2h-7A2 2 0 0 1 6.5 18L8 7z"
+            fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+      <circle cx="12" cy="13.5" r="2" fill="currentColor"/>
+    </svg>
+    <div>
+      <h1>فاصل الفصول</h1>
+      <p class="tagline">قسّم كتب PDF إلى فصول — على جهازك، بدون رفع أي ملف</p>
+    </div>
+  </div>
+</header>
+
+<main>
+  <!-- منطقة رفع الملف -->
+  <section id="dropZone" class="drop-zone" tabindex="0" role="button"
+           aria-label="اختر ملف PDF أو أفلته هنا">
+    <svg viewBox="0 0 24 24" class="drop-icon" aria-hidden="true">
+      <path d="M12 16V4m0 0l-4 4m4-4l4 4M4 20h16" fill="none" stroke="currentColor"
+            stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <p class="drop-title">أفلِت ملف PDF هنا</p>
+    <p class="drop-sub">أو اضغط لاختيار ملف من الجهاز</p>
+    <input type="file" id="fileInput" accept="application/pdf,.pdf" hidden>
+  </section>
+
+  <!-- معلومات الملف -->
+  <section id="fileInfo" class="card hidden">
+    <div class="file-row">
+      <span id="fileName" class="file-name"></span>
+      <span id="filePages" class="file-pages"></span>
+      <button id="resetBtn" class="btn-text" type="button">إزالة</button>
+    </div>
+  </section>
+
+  <!-- أوضاع التشغيل -->
+  <section id="modes" class="card hidden">
+    <div class="mode-switch" role="radiogroup" aria-label="وضع التحليل">
+      <button id="fastModeBtn" class="mode-btn active" role="radio" aria-checked="true" type="button">
+        <strong>⚡ الوضع السريع</strong>
+        <small>استخراج النص فقط — بدون OCR</small>
+      </button>
+      <button id="smartModeBtn" class="mode-btn" role="radio" aria-checked="false" type="button">
+        <strong>🧠 الوضع الذكي</strong>
+        <small>يلجأ لـ OCR عند الحاجة</small>
+      </button>
+    </div>
+
+    <label id="deepScanRow" class="toggle-row hidden">
+      <span>
+        <strong>الفحص العميق (OCR لكل الصفحات)</strong>
+        <small>مفيد عندما يكون النص المستخرج مشوّهاً (ترميز خطوط خاص) — أبطأ، ويحمّل ~15 م.ب أول مرة</small>
+      </span>
+      <input type="checkbox" id="deepScanToggle">
+      <span class="toggle-ui" aria-hidden="true"></span>
+    </label>
+
+    <button id="detectBtn" class="btn-primary" type="button">بدء التحليل واكتشاف الفصول</button>
+    <p class="hint">أو اضغط على أي صفحة في المعاينة لتحديدها كبداية فصل يدوياً</p>
+  </section>
+
+  <!-- شريط التقدم -->
+  <section id="progressCard" class="card hidden" aria-live="polite">
+    <div class="progress-head">
+      <span id="progressLabel">جارٍ التحليل…</span>
+      <span id="progressCount"></span>
+    </div>
+    <div class="progress-track"><div id="progressBar" class="progress-bar"></div></div>
+    <button id="cancelBtn" class="btn-text" type="button">إيقاف</button>
+  </section>
+
+  <!-- المعاينة -->
+  <section id="previewSection" class="hidden">
+    <div class="section-head">
+      <h2>معاينة الصفحات</h2>
+      <span id="chapterCount" class="badge"></span>
+    </div>
+    <div id="thumbGrid" class="thumb-grid"></div>
+  </section>
+
+  <!-- التقسيم والنتائج -->
+  <section id="splitSection" class="card hidden">
+    <button id="splitBtn" class="btn-primary" type="button" disabled>تقسيم الملف إلى فصول</button>
+    <div id="resultsList" class="results"></div>
+    <button id="zipBtn" class="btn-secondary hidden" type="button">تنزيل الكل (ZIP)</button>
+  </section>
+</main>
+
+<footer class="app-footer">
+  <p>يعمل بالكامل داخل المتصفح — ملفاتك لا تغادر جهازك</p>
+</footer>
+
+<!-- المكتبات الأساسية (Tesseract و JSZip تُحمَّل عند الحاجة فقط) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js" defer></script>
+<script src="app.js" defer></script>
+</body>
+</html>
